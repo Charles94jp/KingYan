@@ -2,4 +2,17 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper></mapper>
+<mapper namespace="com.yunmuq.kingyan.mapper.UserMapper">
+    <select id="selectUserByUserName" resultMap="UserRole">
+        select u.*, r.id as r_id, r.name as r_name
+        from kingyan.users u,
+             kingyan.role r
+        where u.role_id = r.id
+          and u.name = #{userName}
+    </select>
+
+    <resultMap id="UserRole" type="com.yunmuq.kingyan.dto.User" autoMapping="true">
+        <association property="role" javaType="com.yunmuq.kingyan.dto.Role" autoMapping="true" columnPrefix="r_">
+        </association>
+    </resultMap>
+</mapper>

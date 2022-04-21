@@ -1,5 +1,8 @@
 package com.yunmuq.kingyan.config.security;
 
+import com.yunmuq.kingyan.util.sm.SMCryptPasswordEncoder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -13,6 +16,14 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
  */
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+    @Autowired
+    CustomUserDetailsService customUserDetailsService;
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(customUserDetailsService).passwordEncoder(new SMCryptPasswordEncoder());
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // 链式编程
@@ -27,7 +38,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // 无权限返回403，而不是上面配置的login页面
         http.exceptionHandling().authenticationEntryPoint(new Http401UnauthorizedEntryPoint());
     }
-
-
-
 }
