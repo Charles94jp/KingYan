@@ -58,7 +58,8 @@ public class customErrorController implements ErrorController {
             return new CommonErrorResponse(httpStatus, msg, exception);
         } catch (Exception errorControllerE) {
             logger.error("ErrorController在处理系统错误时异常，返回默认CommonError", errorControllerE);
-            return new CommonErrorResponse(0, "customErrorController Error", errorControllerE);
+            // 返回的errorCode，未定义是0，customErrorController Error是-1
+            return new CommonErrorResponse(-1, "customErrorController Error", errorControllerE);
         }
     }
 }

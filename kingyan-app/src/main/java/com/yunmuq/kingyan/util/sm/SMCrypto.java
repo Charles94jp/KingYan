@@ -74,24 +74,17 @@ public class SMCrypto {
          * 前端sm-crypto库密文不带 0x04 ，需要前端拼接上，或者后端拼接
          *
          * @param privateKeyHex 后端{@link #generateKeyPairHex}生成的 key。一是不可能由前端生成私钥，二使用前端sm-crypto库的 key 可能会报错
-         * @deprecated 提前转换和缓存 ECPrivateKeyParameters
+         * @deprecated 生产中使用 {@link #doDecrypt(String encryptDataHex, ECPrivateKeyParameters privateKey)}
          */
         public static String doDecrypt(String encryptDataHex, String privateKeyHex) throws InvalidCipherTextException {
             ECPrivateKeyParameters priKey = buildECPrivateKeyParameters(privateKeyHex);
-            return doDecrypt(encryptDataHex, priKey);
-        }
-
-        /**
-         * 提前将配置文件中privateKeyHex转为ECPrivateKeyParameters缓存
-         */
-        public static ECPrivateKeyParameters buildECPrivateKeyParameters(String privateKeyHex) {
-            return new ECPrivateKeyParameters(new BigInteger(Hex.decode(privateKeyHex)), SM2Util.DOMAIN_PARAMS);
+            return new String(doDecrypt(encryptDataHex, priKey));
         }
 
         /**
          * 生产中使用这个
          */
-        public static String doDecrypt(String encryptDataHex, ECPrivateKeyParameters privateKey) throws InvalidCipherTextException {
+        public static byte[] doDecrypt(String encryptDataHex, ECPrivateKeyParameters privateKey) throws InvalidCipherTextException {
             byte[] cipher = Hex.decode(encryptDataHex);
             byte[] realCipher = cipher;
             if (cipher[0] != 0x04) {
@@ -99,8 +92,14 @@ public class SMCrypto {
                 realCipher[0] = 0x04;
                 System.arraycopy(cipher, 0, realCipher, 1, cipher.length);
             }
-            byte[] result = SM2Util.decrypt(privateKey, realCipher);
-            return new String(result);
+            return SM2Util.decrypt(privateKey, realCipher);
+        }
+
+        /**
+         * 提前将配置文件中privateKeyHex转为ECPrivateKeyParameters缓存
+         */
+        public static ECPrivateKeyParameters buildECPrivateKeyParameters(String privateKeyHex) {
+            return new ECPrivateKeyParameters(new BigInteger(Hex.decode(privateKeyHex)), SM2Util.DOMAIN_PARAMS);
         }
     }
 

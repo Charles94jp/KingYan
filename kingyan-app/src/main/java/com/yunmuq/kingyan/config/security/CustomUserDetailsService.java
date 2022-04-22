@@ -1,5 +1,6 @@
 package com.yunmuq.kingyan.config.security;
 
+import com.yunmuq.kingyan.dto.User;
 import com.yunmuq.kingyan.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,6 +22,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return new CustomUserDetails(userMapper.selectUserByUserName(username));
+        User user = userMapper.selectUserByUserName(username);
+        // todo: i18n
+        if (user == null) throw new UsernameNotFoundException("用户名或密码错误");
+        return new CustomUserDetails(user);
     }
 }

@@ -6,21 +6,21 @@ import org.springframework.lang.Nullable;
 @Data
 public class CommonErrorResponse {
     private int errorCode;
-    private String massage;
+    private String message;
     private String exception;
 
     public CommonErrorResponse() {
     }
 
-    public CommonErrorResponse(int errorCode, String massage) {
+    public CommonErrorResponse(int errorCode, String message) {
         this.errorCode = errorCode;
-        this.massage = massage;
+        this.message = message;
         this.exception = null;
     }
 
-    public CommonErrorResponse(int errorCode, String massage, @Nullable Exception e) {
+    public CommonErrorResponse(int errorCode, String message, @Nullable Exception e) {
         this.errorCode = errorCode;
-        this.massage = massage;
+        this.message = message;
         if (e != null) this.exception = e.toString();
     }
 }
