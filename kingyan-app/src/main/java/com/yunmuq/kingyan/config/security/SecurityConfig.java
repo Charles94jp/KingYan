@@ -36,6 +36,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // 没有这句就是403
         http.formLogin().loginProcessingUrl("/login");
         // 无权限返回403，而不是上面配置的login页面
-        http.exceptionHandling().authenticationEntryPoint(new Http401UnauthorizedEntryPoint());
+        // http.exceptionHandling().authenticationEntryPoint(new Http401UnauthorizedEntryPoint());
     }
 }

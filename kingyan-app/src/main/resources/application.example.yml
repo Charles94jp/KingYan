@@ -20,6 +20,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 http-header:
+  # 本地调试时，允许浏览器跨域访问。部署时应当用nginx代理，前后端同源
   access-control-allow-origin: http://localhost:8085
 
 config:

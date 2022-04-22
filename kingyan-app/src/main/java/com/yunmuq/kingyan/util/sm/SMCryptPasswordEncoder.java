@@ -1,6 +1,10 @@
 package com.yunmuq.kingyan.util.sm;
 
+import com.yunmuq.kingyan.util.gmhelper.SM3Util;
+import org.bouncycastle.util.encoders.Hex;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.security.SecureRandom;
 
 /**
  * 配合前端的加解密库，供SpringBootSecurity使用
@@ -19,9 +23,37 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  * @since spring boot 2.6.6
  */
 public class SMCryptPasswordEncoder implements PasswordEncoder {
+    /**
+     * 和sm3 hash结果长度相同
+     */
+    private int saltLength = 32;
 
+    /**
+     * 字节数组，前32位是盐值，后面是sm3编码结果
+     *
+     * @param
+     * @return rawPassword base64编码
+     */
     @Override
     public String encode(CharSequence rawPassword) {
+        // 和sm3 hash结果长度相同
+        byte[] salt = (new SecureRandom()).generateSeed(saltLength);
+        byte[] pwd = ((String) rawPassword).getBytes();
+        byte[] join = new byte[saltLength + pwd.length];
+        System.arraycopy(salt, 0, join, 0, saltLength);
+        System.arraycopy(pwd, 0, join, saltLength + 1, pwd.length);
+        byte[] sm3Hash = SM3Util.hash(join);
+
+        if (sm3Hash.length!=saltLength){
+            throw new Exception("sm3");
+        }
+        // 把盐值也保存，才能校验
+        byte[] result = new byte[saltLength * 2];
+        System.arraycopy(salt, 0, result, 0, saltLength);
+        System.arraycopy(sm3Hash, 0, result, saltLength + 1, saltLength);
+
+
+        //System.
         return null;
     }
 
