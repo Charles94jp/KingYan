@@ -19,9 +19,8 @@ public class Login {
     LoginConfigEntity loginConfig;
 
     @GetMapping("/getLoginConfig")
-    public LoginConfigResponse getLoginConfig(){
+    public LoginConfigResponse getLoginConfig() {
         LoginConfigResponse loginConfigResponse = new LoginConfigResponse(loginConfig.getPublicKeyHex());
         return loginConfigResponse;
     }
-
 }

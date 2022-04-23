@@ -64,6 +64,9 @@ public class SMCryptPasswordEncoder implements PasswordEncoder {
      */
     @Override
     public String encode(CharSequence rawPassword) {
+        // 登录时，查询用户前被调用，传入的值是userNotFoundPassword
+        if (rawPassword.equals("userNotFoundPassword")) return null;
+
         byte[] pwdPlain = decryptSM2(rawPassword);
         if (pwdPlain == null) return null;
 

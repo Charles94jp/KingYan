@@ -40,7 +40,7 @@
 
 <script setup lang="ts">
 import service from '@/util/http'
-import { reactive, ref, UnwrapNestedRefs } from 'vue'
+import { reactive, ref } from 'vue'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const sm2 = require('sm-crypto').sm2
 

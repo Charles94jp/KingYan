@@ -2,8 +2,10 @@ package com.yunmuq.kingyan.config.security;
 
 import com.yunmuq.kingyan.dto.User;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -31,10 +33,16 @@ public class CustomUserDetails implements UserDetails {
         this.user = user;
     }
 
+    /**
+     * 一个用户只有一个角色
+     */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         // todo: 用户角色
-        return null;
+        ArrayList<SimpleGrantedAuthority> simpleGrantedAuthorities = new ArrayList<>();
+        // `hasRole()`传入角色名，会默认给参数添加`ROLE_`前缀
+        simpleGrantedAuthorities.add(new SimpleGrantedAuthority("ROLE_" + user.getRole().getName()));
+        return simpleGrantedAuthorities;
     }
 
     @Override

@@ -9,6 +9,7 @@ import java.util.Date;
 
 /**
  * 用户和角色是多对一，用户只能有唯一的角色。暂不支持多对多
+ * {@link com.yunmuq.kingyan.model.response.UserInfoResponse}
  *
  * @author yunmuq
  * @version v1.0.0
@@ -25,7 +26,10 @@ public class User {
     private String password;
     private Role role;
     private String nickname;
-    private char sex;
+    /**
+     * 数据库中为char，0未知，1男，2女
+     */
+    private int sex;
     private String phone;
     private String email;
     private Date createdDate;
