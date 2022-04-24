@@ -20,5 +20,4 @@ public class LoginResponse {
     // String message;
     // if success
     CommonErrorResponse error;
-    String csrfToken;
 }

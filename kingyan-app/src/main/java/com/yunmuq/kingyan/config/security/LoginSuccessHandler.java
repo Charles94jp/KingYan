@@ -27,7 +27,6 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         PrintWriter out = response.getWriter();
         LoginResponse loginResponse = new LoginResponse();
         loginResponse.setSuccess(true);
-        loginResponse.setCsrfToken("asdgsadfger");
         // todo: csrf
 
         out.write(JSON.toJSONString(loginResponse));

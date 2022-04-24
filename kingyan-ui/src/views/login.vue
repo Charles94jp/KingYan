@@ -41,6 +41,8 @@
 <script setup lang="ts">
 import service from '@/util/http'
 import { reactive, ref } from 'vue'
+import router from '@/router'
+import { ElMessage } from 'element-plus'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const sm2 = require('sm-crypto').sm2
 
@@ -63,12 +65,24 @@ const encryptedLoginData = reactive({ userName: '', pwd: '' })
 function login () {
   if (loginConfig.value) {
     console.log(loginConfig.value.publicKey)
-    encryptedLoginData.userName = sm2.doEncrypt(loginData.userName, loginConfig.value.publicKey)
+    // encryptedLoginData.userName = sm2.doEncrypt(loginData.userName, loginConfig.value.publicKey)
+    encryptedLoginData.userName = loginData.userName
     encryptedLoginData.pwd = sm2.doEncrypt(loginData.pwd, loginConfig.value.publicKey)
   }
-  service({ method: 'POST', url: '/login', data: encryptedLoginData })
+  service({
+    method: 'POST',
+    url: '/login',
+    data: 'username=' + encryptedLoginData.userName + '&password=' + encryptedLoginData.pwd
+  })
     .then(({ data }) => {
-      console.log(data)
+      if (data.success) {
+        router.push('/')
+      } else {
+        ElMessage({
+          message: data.error.message,
+          type: 'warning'
+        })
+      }
     })
 }
 

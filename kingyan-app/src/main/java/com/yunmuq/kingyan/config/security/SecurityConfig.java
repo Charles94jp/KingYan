@@ -1,17 +1,12 @@
 package com.yunmuq.kingyan.config.security;
 
-import com.alibaba.fastjson.JSON;
-import com.yunmuq.kingyan.model.response.CommonErrorResponse;
-import com.yunmuq.kingyan.model.response.LoginResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-
-import java.io.PrintWriter;
+import org.springframework.security.web.csrf.CsrfFilter;
 
 /**
  * @author yunmuq
@@ -33,6 +28,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     LoginSuccessHandler loginSuccessHandler;
+
+    @Autowired
+    HttpHeaderFilter httpHeaderFilter;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -56,6 +54,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.logout();
         // 无权限返回403，而不是上面配置的login页面
         http.exceptionHandling().authenticationEntryPoint(new Http401UnauthorizedEntryPoint());
+
+        http.addFilterBefore(httpHeaderFilter, CsrfFilter.class);
 
         // todo: csrf和session缓存，图片验证码
     }
