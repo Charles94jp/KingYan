@@ -1,8 +1,8 @@
 import axios from 'axios'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { ElMessage } from 'element-plus'
 import router from '../router'
+import elMessage from '@/util/el-message'
 
 // 创建新的 axios 实例
 const service = axios.create({
@@ -35,11 +35,10 @@ service.interceptors.response.use(function (response) {
   // 超出 2xx 范围的状态码都会触发该函数。
   // 对响应错误做点什么
   if (error.response.status === 401) {
-    ElMessage({
-      message: '请先登录',
-      type: 'warning'
-    })
+    elMessage.elMessage('请先登录', 'warning')
     router.push('/login')
+  } else if (error.response.status === 403) {
+    elMessage.elMessage('权限不足，拒绝访问', 'warning')
   } else {
     return Promise.reject(error)
   }

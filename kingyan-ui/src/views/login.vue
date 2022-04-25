@@ -42,7 +42,7 @@
 import service from '@/util/http'
 import { reactive, ref } from 'vue'
 import router from '@/router'
-import { ElMessage } from 'element-plus'
+import elMessage from '@/util/el-message'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const sm2 = require('sm-crypto').sm2
 
@@ -64,7 +64,6 @@ const encryptedLoginData = reactive({ userName: '', pwd: '' })
 
 function login () {
   if (loginConfig.value) {
-    console.log(loginConfig.value.publicKey)
     // encryptedLoginData.userName = sm2.doEncrypt(loginData.userName, loginConfig.value.publicKey)
     encryptedLoginData.userName = loginData.userName
     encryptedLoginData.pwd = sm2.doEncrypt(loginData.pwd, loginConfig.value.publicKey)
@@ -78,10 +77,7 @@ function login () {
       if (data.success) {
         router.push('/')
       } else {
-        ElMessage({
-          message: data.error.message,
-          type: 'warning'
-        })
+        elMessage.elMessage(data.error.message, 'warning')
       }
     })
 }
@@ -98,7 +94,6 @@ const loginBox = reactive({ hidden: false })
 
 function toRegister () {
   formBoxTransform.transform = 'translateX(80%)'
-  console.log(formBoxTransform)
   loginBox.hidden = true
   registerBox.hidden = false
 }

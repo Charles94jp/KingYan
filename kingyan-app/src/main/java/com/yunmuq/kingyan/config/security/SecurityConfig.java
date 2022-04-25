@@ -1,12 +1,22 @@
 package com.yunmuq.kingyan.config.security;
 
+import com.alibaba.fastjson.JSON;
+import com.yunmuq.kingyan.model.response.LoginResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfFilter;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 /**
  * @author yunmuq
@@ -51,7 +61,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.formLogin().loginProcessingUrl("/login").failureHandler(loginFailureHandler)
                 .successHandler(loginSuccessHandler);
 
-        http.logout();
+        http.logout().logoutUrl("/logout").logoutSuccessHandler(new LogoutSuccessHandler() {
+            @Override
+            public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+                response.setContentType("application/json;charset=UTF-8");
+                PrintWriter out = response.getWriter();
+                LoginResponse loginResponse = new LoginResponse();
+                loginResponse.setSuccess(true);
+                // todo: csrf
+
+                out.write(JSON.toJSONString(loginResponse));
+            }
+        });
         // 无权限返回403，而不是上面配置的login页面
         http.exceptionHandling().authenticationEntryPoint(new Http401UnauthorizedEntryPoint());
 
